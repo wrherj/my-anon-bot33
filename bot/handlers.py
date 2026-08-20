@@ -339,4 +339,8 @@ def build_router(settings: Settings, db: Database, matchmaker: Matchmaker) -> Ro
             )
             await matchmaker.search(user_id, show_waiting=False)
         except TelegramBadRequest:
-            await message.answer("Такой тип сообщения Telegram не разрешает скопировать.")
+                except TelegramBadRequest:
+        await message.answer("Такой тип сообщения Telegram не разрешает скопировать.")
+
+    return router
+
