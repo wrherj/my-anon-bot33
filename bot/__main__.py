@@ -12,27 +12,29 @@ from bot.handlers import build_router
 async def main():
     logging.basicConfig(level=logging.INFO)
     
-    # 1. Инициализируем наш починенный конфиг
+    # 1. Настройки
     settings = Settings()
     
-    # 2. Инициализируем бота (токен берется из settings, который читает Рендер)
+    # 2. Инициализируем бота
     bot = Bot(token=settings.BOT_TOKEN.get_secret_value())
     dp = Dispatcher(storage=MemoryStorage())
     
-    # 3. Подключаем базу данных (sqlite в папке data)
+    # 3. Подключаем базу данных и ОТКРЫВАЕМ коннект!
     db = Database("sqlite+aiosqlite:///data/db.sqlite3")
+    await db.connect()  # ВОТ ЭТА СТРОЧКА СПАСЕТ НАШУ ЖОПУ!
     
-    # 4. Запускаем систему подбора собеседников и передаем туда настройки, базу и бота
+    # 4. Запускаем матчмейкер
     matchmaker = Matchmaker(settings=settings, db=db, bot=bot)
     
-    # 5. Собираем роутер с хендлерами
+    # 5. Собираем роутер
     router = build_router(settings=settings, db=db, matchmaker=matchmaker)
     dp.include_router(router)
     
-    logging.info("Бот успешно запущен на оригинальной архитектуре, бро!")
+    logging.info("Бот успешно запущен и БД подключена, бро!")
     
     # Запуск опроса
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
     asyncio.run(main())
+
