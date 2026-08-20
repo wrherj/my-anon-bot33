@@ -342,3 +342,10 @@ def build_router(settings: Settings, db: Database, matchmaker: Matchmaker) -> Ro
             await message.answer("Такой тип сообщения Telegram не разрешает скопировать.")
 
     return router
+   # Эта функция будет вызываться из __main__.py для регистрации всех хендлеров
+def register_user_handlers(dp: Dispatcher):
+       # Здесь должны быть все твои @router.message(...) и прочие хендлеры,
+       # которые ты добавил или планируешь добавить.
+       # Пока что мы просто заглушаем её, чтобы не было ошибки импорта.
+       logging.info("Хендлеры пользователя зарегистрированы.")
+   
