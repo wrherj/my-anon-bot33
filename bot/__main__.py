@@ -26,7 +26,7 @@ async def main():
     db = Database("sqlite+aiosqlite:///data/db.sqlite3")
     
     # 4. Запускаем систему подбора собеседников
-    matchmaker = Matchmaker(db=db, bot=bot)
+    matchmaker = Matchmaker(settings=settings, db=db, bot=bot)
     
     # 5. Собираем роутер с хендлерами
     # Так как оригинальный build_router просит settings, мы создадим простую заглушку-обертку,
