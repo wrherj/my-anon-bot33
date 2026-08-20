@@ -12,7 +12,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    bot_token: str
+    BOT_TOKEN: str
     subscription_price_stars: int = Field(default=199, ge=1, le=10_000)
     free_chat_minutes: int = Field(default=15, ge=1, le=24 * 60)
     min_age: int = Field(default=18, ge=18, le=100)
