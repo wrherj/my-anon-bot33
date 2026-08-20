@@ -23,7 +23,7 @@ async def main():
     dp = Dispatcher(storage=MemoryStorage())
     
     # 3. Подключаем базу данных (sqlite в папке data)
-    db = Database(connection_string="sqlite+aiosqlite:///data/db.sqlite3")
+    db = Database("sqlite+aiosqlite:///data/db.sqlite3")
     
     # 4. Запускаем систему подбора собеседников
     matchmaker = Matchmaker(db=db, bot=bot)
