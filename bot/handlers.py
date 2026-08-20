@@ -337,9 +337,9 @@ def build_router(settings: Settings, db: Database, matchmaker: Matchmaker) -> Ro
                 "Собеседник стал недоступен. Ищу нового...",
                 reply_markup=main_menu(),
             )
-            await matchmaker.search(user_id, show_waiting=False)
-        except TelegramBadRequest:
-                except TelegramBadRequest:
+            await matchmaker.search(user_id, show_waiting=False)  
+            
+    except TelegramBadRequest:
         await message.answer("Такой тип сообщения Telegram не разрешает скопировать.")
 
     return router
