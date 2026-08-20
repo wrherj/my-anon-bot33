@@ -2,22 +2,36 @@ import asyncio
 import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-# Импортируем наши обработчики (мы их сейчас обновим)
-from bot.handlers import register_user_handlers
-# Тут должен быть твой токен. На Рендере мы вынесем его в переменные окружения,
-# но для быстрого старта можешь вписать его прямо сюда вместо "ТВОЙ_ТОКЕН":
-BOT_TOKEN = "8639542935:AAGMhgjmeL7C6_XqFK6p60vcqgthabOOSNE"
 
-logging.basicConfig(level=logging.INFO)
+# Импортируем родные модули из твоего проекта
+from bot.config import Settings
+from bot.db import Database
+from bot.services import Matchmaker
+from bot.handlers import build_router
 
 async def main():
-    bot = Bot(token=BOT_TOKEN)
+    logging.basicConfig(level=logging.INFO)
+    
+    # 1. Загружаем настройки (Рендер подтянет BOT_TOKEN из переменных окружения)
+    settings = Settings()
+    
+    # 2. Инициализируем бота и диспетчер
+    bot = Bot(token=settings.BOT_TOKEN.get_secret_value())
     dp = Dispatcher(storage=MemoryStorage())
     
-    # Регистрируем наши новые роутеры с логикой Stars, жалоб и лимитов
-    register_user_handlers(dp)
+    # 3. Подключаем базу данных (sqlite в папке data)
+    db = Database(connection_string="sqlite+aiosqlite:///data/db.sqlite3")
     
-    logging.info("Бот успешно запущен, бро! Погнали!")
+    # 4. Запускаем систему подбора собеседников
+    matchmaker = Matchmaker(db=db, bot=bot)
+    
+    # 5. Собираем роутер с хендлерами через родную функцию
+    router = build_router(settings=settings, db=db, matchmaker=matchmaker)
+    dp.include_router(router)
+    
+    logging.info("Бот успешно запущен на оригинальной архитектуре, бро!")
+    
+    # Запуск бота в режиме бесконечного опроса
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
