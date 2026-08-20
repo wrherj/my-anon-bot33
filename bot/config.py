@@ -1,11 +1,17 @@
 import os
-from pydantic_core import SecretStr
 
 class Settings:
     def __init__(self):
-        # Берем токен из переменной BOT_TOKEN на Рендере
-        token_val = os.getenv("BOT_TOKEN", "ТВОЙ_ДЕФОЛТНЫЙ_ТОКЕН")
-        self.BOT_TOKEN = SecretStr(token_val)
+        # Забираем токен напрямую из переменной окружения
+        token_val = os.getenv("BOT_TOKEN", "")
         
-        # Если в проекте используются другие настройки, добавляем их сюда:
-        self.admins = []  # Список ID админов, если надо
+        # Оборачиваем его в фейковый класс с методом get_secret_value,
+        # чтобы остальной оригинальный код бота не заметил подмены и не выдал ошибку!
+        class SecretToken:
+            def __init__(self, val):
+                self.val = val
+            def get_secret_value(self):
+                return self.val
+                
+        self.BOT_TOKEN = SecretToken(token_val)
+        self.admins = []
